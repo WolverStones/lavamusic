@@ -27,12 +27,23 @@ export default class QueueEnd extends Event {
 		});
 		if (!message) return;
 
-		if (message.editable) {
-			await message.edit({ components: [] }).catch(() => {
-				null;
-			});
-		}
-	}
+                if (message.editable) {
+                        await message.edit({ components: [] }).catch(() => {
+                                null;
+                        });
+                }
+
+                const existing = player.get<NodeJS.Timeout>('disconnectTimeout');
+                if (existing) clearTimeout(existing);
+
+                const timeout = setTimeout(() => {
+                        if (!player.playing && player.queue.tracks.length === 0) {
+                                player.destroy();
+                        }
+                }, 60_000);
+
+                player.set('disconnectTimeout', timeout);
+        }
 }
 
 /**
