@@ -94,7 +94,7 @@ export default class VoiceStateUpdate extends Event {
 			if (!(vc && vc.members instanceof Map)) return;
 
 			if (vc.members instanceof Map && [...vc.members.values()].filter((x: GuildMember) => !x.user.bot).length <= 0) {
-				setTimeout(async () => {
+                                setTimeout(async () => {
 					if (!player?.voiceChannelId) return;
 
 					const playerVoiceChannel = newState.guild.channels.cache.get(player?.voiceChannelId);
@@ -108,7 +108,7 @@ export default class VoiceStateUpdate extends Event {
 							player.destroy();
 						}
 					}
-				}, 5000);
+                                }, 60_000);
 			}
 		},
 
