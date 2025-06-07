@@ -26,12 +26,17 @@ export default class TrackStart extends Event {
 		});
 	}
 
-	public async run(player: Player, track: Track | null, _payload: TrackStartEvent): Promise<void> {
-		const guild = this.client.guilds.cache.get(player.guildId);
-		if (!guild) return;
-		if (!player.textChannelId) return;
-		if (!track) return;
-		const channel = guild.channels.cache.get(player.textChannelId) as TextChannel;
+        public async run(player: Player, track: Track | null, _payload: TrackStartEvent): Promise<void> {
+                const guild = this.client.guilds.cache.get(player.guildId);
+                if (!guild) return;
+                const pending = player.get<NodeJS.Timeout>('disconnectTimeout');
+                if (pending) {
+                        clearTimeout(pending);
+                        player.set('disconnectTimeout', undefined);
+                }
+                if (!player.textChannelId) return;
+                if (!track) return;
+                const channel = guild.channels.cache.get(player.textChannelId) as TextChannel;
 		if (!channel) return;
 
 		this.client.utils.updateStatus(this.client, guild.id);
